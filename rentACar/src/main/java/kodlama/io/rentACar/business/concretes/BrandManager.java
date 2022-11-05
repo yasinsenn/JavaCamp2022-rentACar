@@ -1,11 +1,14 @@
 package kodlama.io.rentACar.business.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kodlama.io.rentACar.business.abstracts.BrandService;
+import kodlama.io.rentACar.business.requests.CreateBrandsResquest;
+import kodlama.io.rentACar.business.responses.GetAllBrandsResponse;
 import kodlama.io.rentACar.dataAccess.abstracts.BrandRepository;
 import kodlama.io.rentACar.entities.concretes.Brand;
 
@@ -21,9 +24,30 @@ public class BrandManager implements BrandService {
 	}
 
 	@Override
-	public List<Brand> getAll() {
+	public List<GetAllBrandsResponse> getAll() {
 		
-		return brandRepository.getAll();
+		List<Brand> brands = brandRepository.findAll();
+		List<GetAllBrandsResponse> brandsResponses = new ArrayList<GetAllBrandsResponse>();
+		
+		for (Brand brand : brands) {
+			GetAllBrandsResponse responseItem = new GetAllBrandsResponse();
+			responseItem.setId(brand.getId());
+			responseItem.setName(brand.getName());
+			
+			brandsResponses.add(responseItem);
+		}
+		
+		return brandsResponses;
+	}
+
+	@Override
+	public void add(CreateBrandsResquest createBrandsResquest) {
+		
+		Brand brand = new Brand();
+		brand.setName(createBrandsResquest.getName());
+		
+		this.brandRepository.save(brand);
+		
 	}
 
 }
